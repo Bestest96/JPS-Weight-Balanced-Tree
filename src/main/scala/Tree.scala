@@ -126,13 +126,18 @@ case class Tree(root: Option[Node] = None, alpha: Double = 0.25) {
         case _ => recursive(s1.tail, s2 append f(s1.head), output, f)
       }
     }
-
+    
     def filterNoneChildren(node: Node): Stream[Node] = {
       val filteredChildren = Stream(node.left, node.right).filter(_.isDefined).map(_.get)
       filteredChildren
     }
 
-    if (root.isDefined)
-      recursive(Stream(root.get), filterNoneChildren).map(_.key).foreach(println)
+    if (root.isDefined) {
+      val output = recursive(Stream(), Stream(root.get), Seq(), filterNoneChildren)
+      for(s: Stream[Node] <- output){
+        s.map(_.key).foreach( (x: Int) => { print(x); print(" ") })
+        println()
+      }
+    }
   }
 }
