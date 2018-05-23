@@ -20,30 +20,30 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
 
     }
 
-//  def delete(key: Int): Tree = {
-//    val toDelete = find(key)
-//    if (toDelete.isEmpty)
-//      return this
-//    this.copy(root = Option(deleteNode(key, this.root.get, None)))
-//
-//
-//  }
-//
-//  private def deleteNode(key: Int, node: Node, parent: Option[Node]): Node = {
-//    if (node.key > key && node.left.isDefined)
-//      balance(node.copy(left = Option(deleteNode(key, node.left.get, Option(node))), size = node.size))
-//    else if (node.key < key && node.right.isDefined)
-//      balance(node.copy(right = Option(deleteNode(key, node.right.get, Option(node))), size = node.size))
-//    else if (node.key == key) {
-//      (node.left, node.right) match {
-//        case (None, None) => {
-//          val leftParentChild = if (parent.get.left.isDefined && parent.get.left.get == node) None else parent.get.left
-//          val rightParentChild = if (parent.get.right.isDefined && parent.get.right.get == node) None else parent.get.right
-//          balance(parent.get.copy(left = leftParentChild, right = rightParentChild, size = parent.size - 1))
-//        }
-//      }
-//    }
-//  }
+  //  def delete(key: Int): Tree = {
+  //    val toDelete = find(key)
+  //    if (toDelete.isEmpty)
+  //      return this
+  //    this.copy(root = Option(deleteNode(key, this.root.get, None)))
+  //
+  //
+  //  }
+  //
+  //  private def deleteNode(key: Int, node: Node, parent: Option[Node]): Node = {
+  //    if (node.key > key && node.left.isDefined)
+  //      balance(node.copy(left = Option(deleteNode(key, node.left.get, Option(node))), size = node.size))
+  //    else if (node.key < key && node.right.isDefined)
+  //      balance(node.copy(right = Option(deleteNode(key, node.right.get, Option(node))), size = node.size))
+  //    else if (node.key == key) {
+  //      (node.left, node.right) match {
+  //        case (None, None) => {
+  //          val leftParentChild = if (parent.get.left.isDefined && parent.get.left.get == node) None else parent.get.left
+  //          val rightParentChild = if (parent.get.right.isDefined && parent.get.right.get == node) None else parent.get.right
+  //          balance(parent.get.copy(left = leftParentChild, right = rightParentChild, size = parent.size - 1))
+  //        }
+  //      }
+  //    }
+  //  }
 
   def find(key: K): Option[Node[K, V]] = {
 
@@ -61,6 +61,7 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
         }
       }
     }
+
     searchInTree(key, root)
   }
 
@@ -123,16 +124,29 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
   }
 
   def printBfs(): Unit = {
-    def recursive(s: Stream[Node[K, V]], f: Node[K, V] => Stream[Node[K, V]]): Stream[Node[K, V]] = {
-      if (s.isEmpty) s
-      else s.head #:: recursive(s.tail append f(s.head), f)
+    def recursive(s1: Stream[Node[K, V]], s2: Stream[Node[K, V]],
+                  output: Seq[Stream[Node[K, V]]], f: Node[K, V] => Stream[Node[K, V]]): Seq[Stream[Node[K, V]]] = {
+      (s1, s2) match {
+        case (x1: Stream[Node[K, V]], x2: Stream[Node[K, V]]) if x1.isEmpty && x2.isEmpty => output
+        case (x1: Stream[Node[K, V]], x2: Stream[Node[K, V]]) if x1.isEmpty => recursive(x2, Stream(), output :+ x2, f)
+        case _ => recursive(s1.tail, s2 append f(s1.head), output, f)
+      }
     }
+
     def filterNoneChildren(node: Node[K, V]): Stream[Node[K, V]] = {
       val filteredChildren = Stream(node.left, node.right).filter(_.isDefined).map(_.get)
       filteredChildren
     }
 
-    if (root.isDefined)
-      recursive(Stream(root.get), filterNoneChildren).map(_.key).foreach(println)
+    if (root.isDefined) {
+      val output = recursive(Stream(), Stream(root.get), Seq(), filterNoneChildren)
+      for (s: Stream[Node[K, V]] <- output) {
+        s.map((node: Node[K, V]) => (node.key, node.value)).foreach((x: (K, Option[V])) => {
+          print(x._1, x._2.get)
+          print(" ")
+        })
+        println()
+      }
+    }
   }
 }
