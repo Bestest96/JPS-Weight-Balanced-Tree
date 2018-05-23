@@ -123,16 +123,26 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
   }
 
   def printBfs(): Unit = {
-    def recursive(s: Stream[Node[K, V]], f: Node[K, V] => Stream[Node[K, V]]): Stream[Node[K, V]] = {
-      if (s.isEmpty) s
-      else s.head #:: recursive(s.tail append f(s.head), f)
+    def recursive(s1: Stream[Node], s2: Stream[Node],
+                  output: Seq[Stream[Node]], f: Node => Stream[Node]): Seq[Stream[Node]] = {
+      (s1, s2) match {
+        case (x1: Stream[Node], x2: Stream[Node]) if x1.isEmpty && x2.isEmpty => output
+        case (x1: Stream[Node], x2: Stream[Node]) if x1.isEmpty => recursive(x2, Stream(), output :+ x2, f)
+        case _ => recursive(s1.tail, s2 append f(s1.head), output, f)
+      }
     }
-    def filterNoneChildren(node: Node[K, V]): Stream[Node[K, V]] = {
+
+    def filterNoneChildren(node: Node): Stream[Node] = {
       val filteredChildren = Stream(node.left, node.right).filter(_.isDefined).map(_.get)
       filteredChildren
     }
 
-    if (root.isDefined)
-      recursive(Stream(root.get), filterNoneChildren).map(_.key).foreach(println)
+    if (root.isDefined) {
+      val output = recursive(Stream(), Stream(root.get), Seq(), filterNoneChildren)
+      for(s: Stream[Node] <- output){
+        s.map(_.key).foreach( (x: Int) => { print(x); print(" ") })
+        println()
+      }
+    }
   }
 }
