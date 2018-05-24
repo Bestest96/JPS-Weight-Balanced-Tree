@@ -1,6 +1,6 @@
 import scala.annotation.tailrec
 
-case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(implicit ord: K => Ordered[K]) {
+case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.5)(implicit ord: K => Ordered[K]) {
 
   def add(key: K, value: Option[V] = None): Tree[K, V] = {
     if (root.isEmpty)
@@ -148,5 +148,60 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
         println()
       }
     }
+  }
+
+  private def frame(x: Seq[String], verticalChar: String = "|", horizontalChar: String = "-"): Seq[String] = {
+    val width = x.head.length
+    val height = x.length
+
+    val withVerticalSpacings = horizontalChar * width +: x :+ horizontalChar * width
+    val withHorizontalBars = for(row <- withVerticalSpacings) yield verticalChar + row + verticalChar
+    withHorizontalBars
+  }
+
+  private def mergeDraws(leftDraw: Seq[String], rightDraw: Seq[String], leftMargin: Int = 0, rightMargin: Int = 0): Seq[String] = {
+    val leftWidth = if (leftDraw.isEmpty) 0 else leftDraw.head.length
+    val rightWidth = if (rightDraw.isEmpty) 0 else rightDraw.head.length
+    val leftHeight = leftDraw.length
+    val rightHeight = rightDraw.length
+    val currHeight = math.max(leftHeight, rightHeight)
+
+    val suffix1 = for(_ <- 1 to currHeight - leftHeight) yield " " * leftWidth
+    val suffix2 = for(_ <- 1 to currHeight - rightHeight) yield " " * rightWidth
+    val newLeftDraw = leftDraw ++ suffix1
+    val newRightDraw = rightDraw ++ suffix2
+
+    for( i <- 0 until currHeight ) yield " " * leftMargin + newLeftDraw(i) + newRightDraw(i) + " " * rightMargin
+  }
+
+  def prettyPrintBfs(node: Option[Node[K, V]] = root): Unit = {
+    def draw(node: Option[Node[K, V]], toFrame: Boolean = true): Seq[String] = {
+      if (node.isEmpty) Seq()
+      else {
+        val lDraw = draw(node.get.left)
+        val rDraw = draw(node.get.right)
+        val lWidth = if (lDraw.isEmpty) 0 else lDraw.head.length()
+        val rWidth = if (rDraw.isEmpty) 0 else rDraw.head.length()
+        val currText = (node.get.key.toString, node.get.value.toString).toString
+        val textLength = currText.length
+
+        val leftHalfTextLength = (0.5*textLength + 1).toInt
+        val rightHalfTextLength = textLength - leftHalfTextLength
+        val middleLinePos = math.max(lWidth, leftHalfTextLength)
+
+        val leftOffset = middleLinePos - leftHalfTextLength
+        val rightOffset = math.max(rightHalfTextLength, rWidth) - rightHalfTextLength
+        val currString = " " * leftOffset + currText + " " * rightOffset
+
+        val leftMargin = middleLinePos - lWidth
+        val rightMargin = if(rightHalfTextLength > rWidth) rightHalfTextLength - rWidth else 0
+        val newDraw = currString +: mergeDraws(leftDraw = lDraw, rightDraw = rDraw,
+          leftMargin = leftMargin, rightMargin = rightMargin)
+
+        if (toFrame) frame(frame(newDraw, " ", " ")) else newDraw
+      }
+   }
+
+    draw(node).foreach(println)
   }
 }
