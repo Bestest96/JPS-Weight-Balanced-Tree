@@ -1,6 +1,6 @@
 import scala.annotation.tailrec
 
-case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.5)(implicit ord: K => Ordered[K]) {
+case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(implicit ord: K => Ordered[K]) {
 
   def add(key: K, value: Option[V] = None): Tree[K, V] = {
     if (root.isEmpty)
@@ -150,13 +150,20 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.5)(impl
     }
   }
 
-  private def frame(x: Seq[String], verticalChar: String = "|", horizontalChar: String = "-"): Seq[String] = {
+  private def frame(x: Seq[String], verticalChar: String = "|", horizontalChar: String = "-",
+                    corner1Char: String = "x", corner2Char: String = "x",
+                    corner3Char: String = "x", corner4Char: String = "x"): Seq[String] = {
     val width = x.head.length
     val height = x.length
 
-    val withVerticalSpacings = horizontalChar * width +: x :+ horizontalChar * width
-    val withHorizontalBars = for(row <- withVerticalSpacings) yield verticalChar + row + verticalChar
-    withHorizontalBars
+    val outer = Seq(corner1Char + horizontalChar * width + corner2Char,
+      corner3Char + horizontalChar * width + corner4Char)
+    val inner = for(row <- x) yield verticalChar + row + verticalChar
+    outer.head +: inner :+ outer(1)
+  }
+
+  private def emptyFrame(x: Seq[String]): Seq[String] = {
+    frame(x, " ", " ", " ", " ", " ", " ")
   }
 
   private def mergeDraws(leftDraw: Seq[String], rightDraw: Seq[String], leftMargin: Int = 0, rightMargin: Int = 0): Seq[String] = {
@@ -182,7 +189,7 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.5)(impl
         val rDraw = draw(node.get.right)
         val lWidth = if (lDraw.isEmpty) 0 else lDraw.head.length()
         val rWidth = if (rDraw.isEmpty) 0 else rDraw.head.length()
-        val currText = (node.get.key.toString, node.get.value.toString).toString
+        val currText = (node.get.key.toString, node.get.value.getOrElse("").toString).toString
         val textLength = currText.length
 
         val leftHalfTextLength = (0.5*textLength + 1).toInt
@@ -198,7 +205,7 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.5)(impl
         val newDraw = currString +: mergeDraws(leftDraw = lDraw, rightDraw = rDraw,
           leftMargin = leftMargin, rightMargin = rightMargin)
 
-        if (toFrame) frame(frame(newDraw, " ", " ")) else newDraw
+        if (toFrame) frame(emptyFrame(newDraw)) else newDraw
       }
    }
 
