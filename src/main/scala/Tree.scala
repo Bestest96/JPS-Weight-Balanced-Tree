@@ -3,22 +3,63 @@ import scala.annotation.tailrec
 case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(implicit ord: K => Ordered[K]) {
 
   def add(key: K, value: Option[V] = None): Tree[K, V] = {
+    val toAdd = Node[K, V](key, value)
     if (root.isEmpty)
-      Tree(Option(Node[K, V](key, value)))
+      Tree(Option(toAdd))
     else
-      this.copy(root = Option(addNode(key, value, root.get)))
+      this.copy(root = Option(addNode(toAdd, root.get)._2))
   }
 
-  private def addNode(key: K, value: Option[V] = None, node: Node[K, V]): Node[K, V] =
-    if (node.key >= key) {
-      if (node.left.isEmpty) balance(node.copy(left = Option(Node(key, value)), size = node.size + 1))
-      else balance(node.copy(left = Option(addNode(key, value, node.left.get)), size = node.size + 1))
+  private def addNode(nodeToAdd: Node[K, V], node: Node[K, V] = root.get): (Int, Node[K, V]) =
+    if (node.key >= nodeToAdd.key) {
+      if (node.left.isEmpty) (0, node.copy(left = Option(nodeToAdd), size = node.size + 1))
+      else{
+        val (nextDirection, newSon) = addNode(nodeToAdd, node.left.get)
+        val newNode = node.copy(left = Option(newSon), size = node.size + 1)
+        if (isBalanced(newNode)) (0, newNode)
+        else (0, balance(newNode, 0, nextDirection))
+      }
     }
     else {
-      if (node.right.isEmpty) balance(node.copy(right = Option(Node(key, value)), size = node.size + 1))
-      else balance(node.copy(right = Option(addNode(key, value, node.right.get)), size = node.size + 1))
-
+      if (node.right.isEmpty) (1, node.copy(right = Option(nodeToAdd), size = node.size + 1))
+      else{
+        val (nextDirection, newSon) = addNode(nodeToAdd, node.right.get)
+        val newNode = node.copy(right = Option(newSon), size = node.size + 1)
+        if (isBalanced(newNode)) (1, newNode)
+        else (0, balance(newNode, 1, nextDirection))
+      }
     }
+
+  private def isBalanced(node: Node[K, V]): Boolean = {
+    val leftWeight = node.left match {
+      case None => 1
+      case _ => node.left.get.weight()
+    }
+    val rightWeight = node.right match {
+      case None => 1
+      case _ => node.right.get.weight()
+    }
+    node.weight() match {
+      case x if alpha * x > leftWeight => false
+      case x if alpha * x > rightWeight => false
+      case _ => true
+    }
+  }
+
+  def isSubtreeBalanced(node: Option[Node[K, V]]): Boolean = {
+    if (node.isEmpty) true
+    else isBalanced(node.get) && isSubtreeBalanced(node.get.left) && isSubtreeBalanced(node.get.right)
+  }
+
+  def isTreeBalanced: Boolean = isSubtreeBalanced(root)
+
+  private def balance(node: Node[K, V], first: Int, second: Int): Node[K, V] = (first, second) match {
+    case (x: Int, y: Int) if x == 0 && y == 0 => rotateRight(Option(node)).get
+    case (x: Int, y: Int) if x == 0 && y == 1 => rotateRight(Option(node.copy(left = rotateLeft(node.left)))).get
+    case (x: Int, y: Int) if x == 1 && y == 0 => rotateLeft(Option(node.copy(right = rotateRight(node.right)))).get
+    case (x: Int, y: Int) if x == 1 && y == 1 => rotateLeft(Option(node)).get
+    case _ => throw new IllegalArgumentException ("first, second arguments should be from range [0, 1]")
+  }
 
   //  def delete(key: Int): Tree = {
   //    val toDelete = find(key)
@@ -65,7 +106,7 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
     searchInTree(key, root)
   }
 
-  def rotateRight(startNode: Option[Node[K, V]]): Node[K, V] = {
+  def rotateRight(startNode: Option[Node[K, V]]): Option[Node[K, V]] = {
     val startNodeL = startNode.get.left
     val startNodeLR = startNodeL.get.right
     val startNodeLRSize = startNodeLR match {
@@ -80,10 +121,10 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
       case None => startNodeSize + 1
       case _ => startNodeSize + startNodeL.get.left.get.size + 1
     }
-    startNodeL.get.copy(right = Option(startNode.get.copy(left = startNodeLR, size = startNodeSize)), size = startNodeLSize)
+    Option(startNodeL.get.copy(right = Option(startNode.get.copy(left = startNodeLR, size = startNodeSize)), size = startNodeLSize))
   }
 
-  def rotateLeft(startNode: Option[Node[K, V]]): Node[K, V] = {
+  def rotateLeft(startNode: Option[Node[K, V]]): Option[Node[K, V]] = {
     val startNodeR = startNode.get.right
     val startNodeRL = startNodeR.get.left
     val startNodeRLSize = startNodeRL match {
@@ -98,23 +139,7 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
       case None => startNodeSize + 1
       case _ => startNodeSize + startNodeR.get.right.get.size + 1
     }
-    startNodeR.get.copy(left = Option(startNode.get.copy(right = startNodeRL, size = startNodeSize)), size = startNodeRSize)
-  }
-
-  def balance(node: Node[K, V]): Node[K, V] = {
-    val leftWeight = node.left match {
-      case None => 1
-      case _ => node.left.get.weight()
-    }
-    val rightWeight = node.right match {
-      case None => 1
-      case _ => node.right.get.weight()
-    }
-    node.weight() match {
-      case x if alpha * x > leftWeight => rotateLeft(Option(node))
-      case x if alpha * x > rightWeight => rotateRight(Option(node))
-      case _ => node
-    }
+    Option(startNodeR.get.copy(left = Option(startNode.get.copy(right = startNodeRL, size = startNodeSize)), size = startNodeRSize))
   }
 
   def printInOrder(): Unit = {
