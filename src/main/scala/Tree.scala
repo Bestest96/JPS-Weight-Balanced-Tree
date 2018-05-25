@@ -40,46 +40,51 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
   private def helperDelete(toDelete: Node[K, V], currNode: Option[Node[K, V]]): Option[Node[K, V]] = {
     if (currNode.isEmpty) return currNode
     // found the node to delete
-    if (currNode.get == toDelete) {
-      val newCurrNode =
-        // the current node has at least one non-empty child
-        if (currNode.get.left.isEmpty || currNode.get.right.isEmpty) {
-          if (currNode.get.size == 1) None
-          else Option(currNode.get.left.getOrElse(currNode.get.right.get))
-        }
-        // the current node has both children
-        else{
-          val rightSubtreeMinNode = getMinNode(currNode.get.right.get)
-          val substitute = rightSubtreeMinNode.copy(left = currNode.get.left, right = currNode.get.right, size = currNode.size)
-          Option(substitute.copy(right = helperDelete(rightSubtreeMinNode, substitute.right), size = substitute.size - 1))
-        }
+    val newNode =
+      if (currNode.get == toDelete) {
+        val newCurrNode =
+          // the current node has at least one non-empty child
+          if (currNode.get.left.isEmpty || currNode.get.right.isEmpty) {
+            if (currNode.get.size == 1) None
+            else Option(currNode.get.left.getOrElse(currNode.get.right.get))
+          }
+          // the current node has both children
+          else{
+            val rightSubtreeMinNode = getMinNode(currNode.get.right.get)
+            val substitute = rightSubtreeMinNode.copy(left = currNode.get.left, right = currNode.get.right, size = currNode.get.size)
+            Option(substitute.copy(right = helperDelete(rightSubtreeMinNode, substitute.right), size = substitute.size - 1))
+          }
 
-      newCurrNode
-    }
-    // the node to delete not found yet
-    else {
-      // the node to delete is in the left subtree
-      val newNode =
-        if (toDelete.key <= currNode.get.key){
-          val newSon = helperDelete(toDelete, currNode.get.left)
-          val newNode = currNode.get.copy(left = newSon, size = currNode.size - 1)
-          newNode
-        }
-        // the node to delete is in the right subtree
-        else{
-          val newSon = helperDelete(toDelete, currNode.get.right)
-          val newNode = currNode.get.copy(right = newSon, size = currNode.size - 1)
-          newNode
-        }
-//
-//      Option(newNode)
-
-      if (isBalanced(newNode)) Option(newNode)
-      else{
-        val (side1, child1) = getChildWithGreaterWeight(newNode)
-        val (side2, _) = getChildWithGreaterWeight(child1)
-        Option(balance(newNode, side1, side2))
+        newCurrNode
       }
+      // the node to delete not found yet
+      else {
+        // the node to delete is in the left subtree
+        val newNode =
+          if (toDelete.key <= currNode.get.key){
+            val newSon = helperDelete(toDelete, currNode.get.left)
+            val newNode = currNode.get.copy(left = newSon, size = currNode.get.size - 1)
+            newNode
+          }
+          // the node to delete is in the right subtree
+          else{
+            val newSon = helperDelete(toDelete, currNode.get.right)
+            val newNode = currNode.get.copy(right = newSon, size = currNode.get.size - 1)
+            newNode
+          }
+
+        Option(newNode)
+      }
+
+    newNode match {
+      case None => newNode
+      case _ =>
+        if (isBalanced(newNode.get)) newNode
+        else{
+          val (side1, child1) = getChildWithGreaterWeight(newNode.get)
+          val (side2, _) = getChildWithGreaterWeight(child1)
+          Option(balance(newNode.get, side1, side2))
+        }
     }
   }
 
@@ -92,11 +97,11 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
   }
 
   private def getChildWithGreaterWeight(node: Node[K, V]): (Int, Node[K, V]) = {
-    (node.left.get, node.right.get) match {
-      case (x: Node[K, V], y: Node[K, V]) if x.weight() >= y.weight() => (0, x)
-      case (x: Node[K, V], y: Node[K, V]) if x.weight() < y.weight() => (1, y)
-      case (_, x: Node[K, V]) => (1, x)
-      case (x: Node[K, V], _) => (0, x)
+    (node.left, node.right) match {
+      case (x: Some[Node[K, V]], y: Some[Node[K, V]]) if x.get.weight() >= y.get.weight() => (0, x.get)
+      case (x: Some[Node[K, V]], y: Some[Node[K, V]]) if x.get.weight() < y.get.weight() => (1, y.get)
+      case (_, x: Some[Node[K, V]]) => (1, x.get)
+      case (x: Some[Node[K, V]], _) => (0, x.get)
       case _ => throw new IllegalArgumentException("Expected non-leaf node.")
     }
   }
