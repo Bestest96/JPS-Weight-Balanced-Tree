@@ -26,9 +26,80 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
         val (nextDirection, newSon) = addNode(nodeToAdd, node.right.get)
         val newNode = node.copy(right = Option(newSon), size = node.size + 1)
         if (isBalanced(newNode)) (1, newNode)
-        else (0, balance(newNode, 1, nextDirection))
+        else (1, balance(newNode, 1, nextDirection))
       }
     }
+
+  def delete(toDelete: Node[K, V]): Tree[K, V] = {
+    find(toDelete.key) match {
+      case None => this
+      case _ => this.copy(root = helperDelete(toDelete, root))
+    }
+  }
+
+  private def helperDelete(toDelete: Node[K, V], currNode: Option[Node[K, V]]): Option[Node[K, V]] = {
+    if (currNode.isEmpty) return currNode
+    // found the node to delete
+    if (currNode.get == toDelete) {
+      val newCurrNode =
+        // the current node has at least one non-empty child
+        if (currNode.get.left.isEmpty || currNode.get.right.isEmpty) {
+          if (currNode.get.size == 1) None
+          else Option(currNode.get.left.getOrElse(currNode.get.right.get))
+        }
+        // the current node has both children
+        else{
+          val rightSubtreeMinNode = getMinNode(currNode.get.right.get)
+          val substitute = rightSubtreeMinNode.copy(left = currNode.get.left, right = currNode.get.right, size = currNode.size)
+          Option(substitute.copy(right = helperDelete(rightSubtreeMinNode, substitute.right), size = substitute.size - 1))
+        }
+
+      newCurrNode
+    }
+    // the node to delete not found yet
+    else {
+      // the node to delete is in the left subtree
+      val newNode =
+        if (toDelete.key <= currNode.get.key){
+          val newSon = helperDelete(toDelete, currNode.get.left)
+          val newNode = currNode.get.copy(left = newSon, size = currNode.size - 1)
+          newNode
+        }
+        // the node to delete is in the right subtree
+        else{
+          val newSon = helperDelete(toDelete, currNode.get.right)
+          val newNode = currNode.get.copy(right = newSon, size = currNode.size - 1)
+          newNode
+        }
+//
+//      Option(newNode)
+
+      if (isBalanced(newNode)) Option(newNode)
+      else{
+        val (side1, child1) = getChildWithGreaterWeight(newNode)
+        val (side2, _) = getChildWithGreaterWeight(child1)
+        Option(balance(newNode, side1, side2))
+      }
+    }
+  }
+
+  private def getMinNode(node: Node[K, V]): Node[K, V] = {
+    def inner(node: Node[K, V]): Node[K, V] =
+      if (node.left.isEmpty) node
+      else inner(node.left.get)
+
+    inner(node)
+  }
+
+  private def getChildWithGreaterWeight(node: Node[K, V]): (Int, Node[K, V]) = {
+    (node.left.get, node.right.get) match {
+      case (x: Node[K, V], y: Node[K, V]) if x.weight() >= y.weight() => (0, x)
+      case (x: Node[K, V], y: Node[K, V]) if x.weight() < y.weight() => (1, y)
+      case (_, x: Node[K, V]) => (1, x)
+      case (x: Node[K, V], _) => (0, x)
+      case _ => throw new IllegalArgumentException("Expected non-leaf node.")
+    }
+  }
 
   private def isBalanced(node: Node[K, V]): Boolean = {
     val leftWeight = node.left match {
@@ -60,31 +131,6 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
     case (x: Int, y: Int) if x == 1 && y == 1 => rotateLeft(Option(node)).get
     case _ => throw new IllegalArgumentException ("first, second arguments should be from range [0, 1]")
   }
-
-  //  def delete(key: Int): Tree = {
-  //    val toDelete = find(key)
-  //    if (toDelete.isEmpty)
-  //      return this
-  //    this.copy(root = Option(deleteNode(key, this.root.get, None)))
-  //
-  //
-  //  }
-  //
-  //  private def deleteNode(key: Int, node: Node, parent: Option[Node]): Node = {
-  //    if (node.key > key && node.left.isDefined)
-  //      balance(node.copy(left = Option(deleteNode(key, node.left.get, Option(node))), size = node.size))
-  //    else if (node.key < key && node.right.isDefined)
-  //      balance(node.copy(right = Option(deleteNode(key, node.right.get, Option(node))), size = node.size))
-  //    else if (node.key == key) {
-  //      (node.left, node.right) match {
-  //        case (None, None) => {
-  //          val leftParentChild = if (parent.get.left.isDefined && parent.get.left.get == node) None else parent.get.left
-  //          val rightParentChild = if (parent.get.right.isDefined && parent.get.right.get == node) None else parent.get.right
-  //          balance(parent.get.copy(left = leftParentChild, right = rightParentChild, size = parent.size - 1))
-  //        }
-  //      }
-  //    }
-  //  }
 
   def find(key: K): Option[Node[K, V]] = {
 
@@ -214,7 +260,8 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
         val rDraw = draw(node.get.right)
         val lWidth = if (lDraw.isEmpty) 0 else lDraw.head.length()
         val rWidth = if (rDraw.isEmpty) 0 else rDraw.head.length()
-        val currText = (node.get.key.toString, node.get.value.getOrElse("").toString).toString
+//        val currText = (node.get.key.toString, node.get.value.getOrElse("").toString).toString
+        val currText = (node.get.key.toString, node.get.size.toString).toString
         val textLength = currText.length
 
         val leftHalfTextLength = (0.5*textLength + 1).toInt
