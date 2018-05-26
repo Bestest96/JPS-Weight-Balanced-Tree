@@ -1,3 +1,9 @@
+/**
+  * A class representing the set based on weight-based tree.
+  * @param tree A tree used to store data.
+  * @param ord Implicit argument specifying that a type K must be convertible to Ordered[K].
+  * @tparam K A type of elements in a set.
+  */
 case class WBTreeSet[K](tree: Tree[K, Nothing])(implicit ord: K => Ordered[K]) {
 
 
