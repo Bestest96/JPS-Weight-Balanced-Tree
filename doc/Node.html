@@ -84,7 +84,7 @@
         <span class="name">Node</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="Node.K">K</span></span>, <span name="value">value: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="Node.V">V</span>] = <span class="symbol">None</span></span>, <span name="left">left: <span class="extype" name="scala.Option">Option</span>[<a href="" class="extype" name="Node">Node</a>[<span class="extype" name="Node.K">K</span>, <span class="extype" name="Node.V">V</span>]] = <span class="symbol">None</span></span>, <span name="right">right: <span class="extype" name="scala.Option">Option</span>[<a href="" class="extype" name="Node">Node</a>[<span class="extype" name="Node.K">K</span>, <span class="extype" name="Node.V">V</span>]] = <span class="symbol">None</span></span>, <span name="size">size: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ord">ord: (<span class="extype" name="Node.K">K</span>) ⇒ <span class="extype" name="scala.Ordered">Ordered</span>[<span class="extype" name="Node.K">K</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="_root_">root</a></dd></dl></div>
+      <p class="shortcomment cmt">A class representing a node in a tree.</p><div class="fullcomment"><div class="comment cmt"><p>A class representing a node in a tree.</p></div><dl class="paramcmts block"><dt class="tparam">K</dt><dd class="cmt"><p>A type of the key.</p></dd><dt class="tparam">V</dt><dd class="cmt"><p>A type of the value (may be Nothing if not used).</p></dd><dt class="param">key</dt><dd class="cmt"><p>A value used to place a node in a tree (to maintain order).</p></dd><dt class="param">value</dt><dd class="cmt"><p>A value mapped by the key value.</p></dd><dt class="param">left</dt><dd class="cmt"><p>A node containing the left subtree of this node.</p></dd><dt class="param">right</dt><dd class="cmt"><p>A node containing the right subtree of this node.</p></dd><dt class="param">size</dt><dd class="cmt"><p>The size of the node, defined as right.size + left.size + 1.</p></dd><dt class="param">ord</dt><dd class="cmt"><p>Implicit argument specifying that a type K must be convertible to Ordered[K].</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="_root_">root</a></dd></dl></div>
     </li>
               </ul>
             </div>
@@ -113,7 +113,7 @@
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A class representing a node in a tree.</p></div><dl class="paramcmts block"><dt class="tparam">K</dt><dd class="cmt"><p>A type of the key.</p></dd><dt class="tparam">V</dt><dd class="cmt"><p>A type of the value (may be Nothing if not used).</p></dd><dt class="param">key</dt><dd class="cmt"><p>A value used to place a node in a tree (to maintain order).</p></dd><dt class="param">value</dt><dd class="cmt"><p>A value mapped by the key value.</p></dd><dt class="param">left</dt><dd class="cmt"><p>A node containing the left subtree of this node.</p></dd><dt class="param">right</dt><dd class="cmt"><p>A node containing the right subtree of this node.</p></dd><dt class="param">size</dt><dd class="cmt"><p>The size of the node, defined as right.size + left.size + 1.</p></dd><dt class="param">ord</dt><dd class="cmt"><p>Implicit argument specifying that a type K must be convertible to Ordered[K].</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -163,7 +163,7 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="Node#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="Node#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="&lt;init&gt;(key:K,value:Option[V],left:Option[Node[K,V]],right:Option[Node[K,V]],size:Int)(implicitord:K=&gt;Ordered[K]):Node[K,V]"></a><a id="&lt;init&gt;:Node[K,V]"></a>
       <span class="permalink">
       <a href="Node.html#&lt;init&gt;(key:K,value:Option[V],left:Option[Node[K,V]],right:Option[Node[K,V]],size:Int)(implicitord:K=&gt;Ordered[K]):Node[K,V]" title="Permalink">
@@ -178,7 +178,7 @@
         <span class="name">Node</span><span class="params">(<span name="key">key: <span class="extype" name="Node.K">K</span></span>, <span name="value">value: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="Node.V">V</span>] = <span class="symbol">None</span></span>, <span name="left">left: <span class="extype" name="scala.Option">Option</span>[<a href="" class="extype" name="Node">Node</a>[<span class="extype" name="Node.K">K</span>, <span class="extype" name="Node.V">V</span>]] = <span class="symbol">None</span></span>, <span name="right">right: <span class="extype" name="scala.Option">Option</span>[<a href="" class="extype" name="Node">Node</a>[<span class="extype" name="Node.K">K</span>, <span class="extype" name="Node.V">V</span>]] = <span class="symbol">None</span></span>, <span name="size">size: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ord">ord: (<span class="extype" name="Node.K">K</span>) ⇒ <span class="extype" name="scala.Ordered">Ordered</span>[<span class="extype" name="Node.K">K</span>]</span>)</span>
       </span>
       
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">key</dt><dd class="cmt"><p>A value used to place a node in a tree (to maintain order).</p></dd><dt class="param">value</dt><dd class="cmt"><p>A value mapped by the key value.</p></dd><dt class="param">left</dt><dd class="cmt"><p>A node containing the left subtree of this node.</p></dd><dt class="param">right</dt><dd class="cmt"><p>A node containing the right subtree of this node.</p></dd><dt class="param">size</dt><dd class="cmt"><p>The size of the node, defined as right.size + left.size + 1.</p></dd><dt class="param">ord</dt><dd class="cmt"><p>Implicit argument specifying that a type K must be convertible to Ordered[K].</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -499,7 +499,7 @@
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
-      <p class="shortcomment cmt">Creates and returns a string representation of a node.</p><div class="fullcomment"><div class="comment cmt"><p>Creates and returns a string representation of a node.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a string representation of a node.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="Node">Node</a> → AnyRef → Any</dd></dl></div>
+      <p class="shortcomment cmt">Creates and returns a string representation of a node.</p><div class="fullcomment"><div class="comment cmt"><p>Creates and returns a string representation of a node.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>A string representation of a node.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="Node">Node</a> → AnyRef → Any</dd></dl></div>
     </li><li name="Node#value" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="value:Option[V]"></a>
       <span class="permalink">
@@ -599,7 +599,7 @@
         <span class="name">weight</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       
-      <p class="shortcomment cmt">Returns the weight of a node equal to its size incremented by one.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the weight of a node equal to its size incremented by one.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the weight of a node</p></dd></dl></div>
+      <p class="shortcomment cmt">Returns the weight of a node equal to its size incremented by one.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the weight of a node equal to its size incremented by one.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>A weight of a node</p></dd></dl></div>
     </li>
               </ol>
             </div>
