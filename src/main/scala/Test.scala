@@ -21,11 +21,11 @@ object Test {
   def testDeletingNodes(numberOfTests: Int = 100): Unit = {
     val testResults =
       for(_ <- 1 to numberOfTests) yield {
-        val pairs = Stream.from(1).take(1000).map(new Random(_).nextInt(1000)).map((_, Option("XD")))
-        var tree = TreeGenerator.generate(pairs)
+        val keys = Stream.from(1).take(1000).map(new Random(_).nextInt(1000))
+        var tree = TreeGenerator.generateKeys(keys)
         val tests =
-          for ((key, _) <- pairs) yield {
-            tree = tree.delete(tree.find(key).get)
+          for (key <- keys) yield {
+            tree = tree.delete(key)
             tree.isTreeBalanced
           }
         if (tests.reduce(_ && _)) 1 else 0

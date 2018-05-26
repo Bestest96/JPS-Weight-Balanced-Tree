@@ -2,6 +2,17 @@ import scala.annotation.tailrec
 
 case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(implicit ord: K => Ordered[K]) {
 
+  def keys(): List[K] = {
+
+    def keyList(node: Option[Node[K, V]]): List[K] = {
+      if (node.isEmpty)
+        List.empty
+      else
+        node.get.key :: keyList(node.get.left) ::: keyList(node.get.right)
+    }
+    keyList(root)
+  }
+
   def add(key: K, value: Option[V] = None): Tree[K, V] = {
     val toAdd = Node[K, V](key, value)
     if (root.isEmpty)
@@ -30,7 +41,12 @@ case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(imp
       }
     }
 
-  def delete(toDelete: Node[K, V]): Tree[K, V] = {
+  def delete(key: K): Tree[K, V] = {
+    val toDelete = find(key)
+    if (toDelete.isEmpty) this else this.copy(root = helperDelete(toDelete.get, root))
+  }
+
+  def deleteNode(toDelete: Node[K, V]): Tree[K, V] = {
     find(toDelete.key) match {
       case None => this
       case _ => this.copy(root = helperDelete(toDelete, root))
