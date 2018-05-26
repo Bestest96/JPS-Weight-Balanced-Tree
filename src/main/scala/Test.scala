@@ -1,6 +1,16 @@
 import scala.util.Random
 
+/**
+  * Class containing tests covering core functions of Tree class
+  * as well as WBTreeSet functions.
+  */
 object Test {
+  def testAll(): Unit = {
+    testAddingNodes()
+    testDeletingNodes()
+    testWBTreeSet()
+  }
+
   def testAddingNodes(numberOfTests: Int = 100): Unit = {
     val testResults =
     for(_ <- 1 to numberOfTests) yield {
@@ -39,6 +49,7 @@ object Test {
   def testWBTreeSet(): Unit = {
     testWBTreeSetElementsAfterDeletion()
     testWBTreeSetElementsAfterDeletions()
+    testWBTreeSetElementsAfterDeletionNotExistingValue()
     testWBTreeSetElementsAfterOneAdding()
     testWBTreeSetContains()
     testWBTreeSetSumEmptySets()
@@ -54,7 +65,6 @@ object Test {
     println("------------------------------------")
   }
 
-  // getElements tests
   private def testWBTreeElementsEmptySet(): Unit = {
     val mySet = WBTreeSet[Int]()
     assert(mySet.getAllElements == List())
@@ -75,16 +85,17 @@ object Test {
     val mySet2 = mySet.delete(2).delete(3)
     assert(mySet2.getAllElements.toSet == List(1, 4).toSet)
   }
-  // getElements tests
 
-  // contains tests
+  private def testWBTreeSetElementsAfterDeletionNotExistingValue(): Unit = {
+    val mySet = WBTreeSet[Int]().add(1).add(2).delete(3).delete(4)
+    assert(mySet.getAllElements.toSet == Set(1, 2))
+  }
+
   private def testWBTreeSetContains(): Unit = {
     val mySet = WBTreeSet[Int]().add(1).add(2).add(3).delete(2)
     assert(mySet.contains(1) && !mySet.contains(2) && mySet.contains(3))
   }
-  // contains tests
 
-  // sum tests
   private def testWBTreeSetSumEmptySets(): Unit = {
     val mySet1 = WBTreeSet[Int]()
     val mySet2 = WBTreeSet[Int]()
@@ -102,9 +113,7 @@ object Test {
     val mySet2 = WBTreeSet[Int]().add(3)
     assert(mySet1.sum(mySet2).getAllElements.toSet == List(1, 2, 3).toSet)
   }
-  // sum tests
 
-  // intersection tests
   private def testWBTreeSetIntersectionEmptySets(): Unit = {
     val mySet1 = WBTreeSet[Int]()
     val mySet2 = WBTreeSet[Int]()
@@ -128,6 +137,5 @@ object Test {
     val mySet2 = WBTreeSet[Int]().add(4).add(5).add(6)
     assert(mySet1.intersection(mySet2).getAllElements == List())
   }
-  // intersection tests
 
 }
