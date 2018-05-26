@@ -47,7 +47,7 @@ case class WBTreeSet[K](tree: Tree[K, Nothing])(implicit ord: K => Ordered[K]) {
     * @param other The second set to get elements to intersect.
     * @return A new set containing the intersection of two sets.
     */
-  def intersection(other: WBTreeSet[K]): WBTreeSet[K] = {
+  def intersect(other: WBTreeSet[K]): WBTreeSet[K] = {
     WBTreeSet(TreeGenerator.generateKeys(tree.keys().intersect(other.tree.keys())))
   }
 
