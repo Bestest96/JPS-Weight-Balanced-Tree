@@ -1,4 +1,5 @@
-case class WBTreeSet[K](tree: Tree[K, Nothing] = Tree[K, Nothing]())(implicit ord: K => Ordered[K]) {
+case class WBTreeSet[K](tree: Tree[K, Nothing])(implicit ord: K => Ordered[K]) {
+
 
   def contains(elem: K): Boolean = {
     if (tree.find(elem).isDefined) true else false
@@ -23,4 +24,8 @@ case class WBTreeSet[K](tree: Tree[K, Nothing] = Tree[K, Nothing]())(implicit or
   def getAllElements: List[K] = {
     tree.keys()
   }
+}
+
+object WBTreeSet {
+  def apply[K](implicit ord: K => Ordered[K]): WBTreeSet[K] = WBTreeSet(Tree[K, Nothing]())
 }
