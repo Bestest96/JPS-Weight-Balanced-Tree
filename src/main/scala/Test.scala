@@ -40,8 +40,8 @@ object Test {
           }
         if (tests.reduce(_ && _)) 1 else 0
       }
-
-    println("------------delete_nodes------------")
+    
+    println("-----------deleting_nodes-----------")
     println(testResults.sum.toString + " out of " + numberOfTests.toString + " tests passed.")
     println("------------------------------------")
   }
