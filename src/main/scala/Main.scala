@@ -9,5 +9,7 @@ object Main {
     println(tree.isTreeBalanced)
 
     val set = WBTreeSet[Int](Tree[Int, Nothing]())
+
+    val secondSet = WBTreeSet[Int]()
   }
 }

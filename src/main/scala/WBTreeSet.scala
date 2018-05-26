@@ -27,5 +27,5 @@ case class WBTreeSet[K](tree: Tree[K, Nothing])(implicit ord: K => Ordered[K]) {
 }
 
 object WBTreeSet {
-  def apply[K](implicit ord: K => Ordered[K]): WBTreeSet[K] = WBTreeSet(Tree[K, Nothing]())
+  def apply[K]()(implicit ord: K => Ordered[K]): WBTreeSet[K] = WBTreeSet(Tree[K, Nothing]())
 }

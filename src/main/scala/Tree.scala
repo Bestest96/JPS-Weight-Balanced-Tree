@@ -1,7 +1,20 @@
 import scala.annotation.tailrec
 
+
+/**
+  * A class representing the weight-balanced tree.
+  * @param root A node that is a root of a tree.
+  * @param alpha A constant factor used when deciding about balancing the tree.
+  * @param ord Implicit argument specifying that a type K must be convertible to Ordered[K].
+  * @tparam K A type of the key.
+  * @tparam V A type of the value (may be Nothing if not used).
+  */
 case class Tree[K, V](root: Option[Node[K, V]] = None, alpha: Double = 0.25)(implicit ord: K => Ordered[K]) {
 
+  /**
+    * Gets keys from the tree and returns them as a list.
+    * @return a list of keys
+    */
   def keys(): List[K] = {
 
     def keyList(node: Option[Node[K, V]]): List[K] = {
