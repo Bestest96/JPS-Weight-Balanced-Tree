@@ -13,13 +13,13 @@
 case class Node[K, V](key: K, value: Option[V] = None, left: Option[Node[K, V]] = None, right: Option[Node[K, V]] = None, size: Int = 1)(implicit ord: K => Ordered[K]) {
   /**
     * Returns the weight of a node equal to its size incremented by one.
-    * @return the weight of a node
+    * @return A weight of a node
     */
   def weight(): Int = size + 1
 
   /**
     * Creates and returns a string representation of a node.
-    * @return a string representation of a node.
+    * @return A string representation of a node.
     */
   override def toString: String = (key, value.getOrElse("")).toString()
 }
