@@ -13,11 +13,11 @@ case class WBTreeSet[K: Ordering](tree: Tree[K, Nothing]) {
   }
 
   def sum(other: WBTreeSet[K]): WBTreeSet[K] = {
-    WBTreeSet(TreeGenerator.generateFromKeys((tree.keys() ::: other.tree.keys()).distinct))
+    WBTreeSet(TreeGenerator.generateKeys((tree.keys() ::: other.tree.keys()).distinct))
   }
 
   def intersection(other: WBTreeSet[K]): WBTreeSet[K] = {
-    WBTreeSet(TreeGenerator.generateFromKeys(tree.keys().intersect(other.tree.keys())))
+    WBTreeSet(TreeGenerator.generateKeys(tree.keys().intersect(other.tree.keys())))
   }
 
   def getAllElements: List[K] = {
