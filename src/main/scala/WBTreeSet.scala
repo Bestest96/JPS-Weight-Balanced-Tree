@@ -1,5 +1,4 @@
-case class WBTreeSet[K](tree: Tree[K, Nothing])(implicit ord: K => Ordered[K]) {
-
+case class WBTreeSet[K: Ordering](tree: Tree[K, Nothing]) {
 
   def contains(elem: K): Boolean = {
     if (tree.find(elem).isDefined) true else false
@@ -14,18 +13,19 @@ case class WBTreeSet[K](tree: Tree[K, Nothing])(implicit ord: K => Ordered[K]) {
   }
 
   def sum(other: WBTreeSet[K]): WBTreeSet[K] = {
-    WBTreeSet(TreeGenerator.generateKeys((tree.keys() ::: other.tree.keys()).distinct))
+    WBTreeSet(TreeGenerator.generateFromKeys((tree.keys() ::: other.tree.keys()).distinct))
   }
 
   def intersection(other: WBTreeSet[K]): WBTreeSet[K] = {
-    WBTreeSet(TreeGenerator.generateKeys(tree.keys().intersect(other.tree.keys())))
+    WBTreeSet(TreeGenerator.generateFromKeys(tree.keys().intersect(other.tree.keys())))
   }
 
   def getAllElements: List[K] = {
     tree.keys()
   }
+
 }
 
 object WBTreeSet {
-  def apply[K](implicit ord: K => Ordered[K]): WBTreeSet[K] = WBTreeSet(Tree[K, Nothing]())
+  def apply[K: Ordering](): WBTreeSet[K] = WBTreeSet(Tree[K, Nothing]())
 }

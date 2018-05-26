@@ -22,7 +22,7 @@ object Test {
     val testResults =
       for(_ <- 1 to numberOfTests) yield {
         val keys = Stream.from(1).take(1000).map(new Random(_).nextInt(1000))
-        var tree = TreeGenerator.generateKeys(keys)
+        var tree = TreeGenerator.generateFromKeys(keys)
         val tests =
           for (key <- keys) yield {
             tree = tree.delete(key)
