@@ -8,9 +8,11 @@ object Main {
 //
 //    println(tree.isTreeBalanced)
 
-//    val ourSet = List(1, 2, 3, 4, 5).foldLeft(WBTreeSet[Int]())((B: WBTreeSet[Int], key: Int) => _.add(_))
-    val ourSet = WBTreeSet[Int]().add(3).add(4).add(5)
-    val ourSet2 = WBTreeSet[Int]().add(3).add(7).add(-1)
-    println(ourSet.intersection(ourSet2).getAllElements())
+//    val ourSet = List(1, 2, 3, 4, 5).foldLeft(WBTreeSet[Int]())((B: WBTreeSet[Int], key: Int) => B.add(key))
+////    val ourSet = WBTreeSet[Int]().add(3).add(4).add(5)
+////    val ourSet2 = WBTreeSet[Int]().add(3).add(7).add(-1)
+//    println(ourSet.getAllElements)
+
+    Test.testWBTreeSet()
   }
 }

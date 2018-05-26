@@ -35,4 +35,99 @@ object Test {
     println(testResults.sum.toString + " out of " + numberOfTests.toString + " tests passed.")
     println("------------------------------------")
   }
+
+  def testWBTreeSet(): Unit = {
+    testWBTreeSetElementsAfterDeletion()
+    testWBTreeSetElementsAfterDeletions()
+    testWBTreeSetElementsAfterOneAdding()
+    testWBTreeSetContains()
+    testWBTreeSetSumEmptySets()
+    testWBTreeSetSumNotEmptySets()
+    testWBTreeSetSumOneEmptySet()
+    testWBTreeSetIntersectionEmptySets()
+    testWBTreeSetIntersectionNotEmptySetsEmptyIntersection()
+    testWBTreeSetIntersectionNotEmptySetsNotEmptyIntersection()
+    testWBTreeSetIntersectionOneEmptySet()
+
+    println("--------------WBTreeSet-------------")
+    println("All tests passed.")
+    println("------------------------------------")
+  }
+
+  // getElements tests
+  private def testWBTreeElementsEmptySet(): Unit = {
+    val mySet = WBTreeSet[Int]()
+    assert(mySet.getAllElements == List())
+  }
+
+  private def testWBTreeSetElementsAfterOneAdding(): Unit = {
+    val mySet = WBTreeSet[Int]().add(1)
+    assert(mySet.getAllElements == List(1))
+  }
+
+  private def testWBTreeSetElementsAfterDeletion(): Unit = {
+    val mySet = WBTreeSet[Int]().add(1).delete(1)
+    assert(mySet.getAllElements == List())
+  }
+
+  private def testWBTreeSetElementsAfterDeletions(): Unit = {
+    val mySet = WBTreeSet[Int]().add(1).add(2).add(3).add(4)
+    val mySet2 = mySet.delete(2).delete(3)
+    assert(mySet2.getAllElements.toSet == List(1, 4).toSet)
+  }
+  // getElements tests
+
+  // contains tests
+  private def testWBTreeSetContains(): Unit = {
+    val mySet = WBTreeSet[Int]().add(1).add(2).add(3).delete(2)
+    assert(mySet.contains(1) && !mySet.contains(2) && mySet.contains(3))
+  }
+  // contains tests
+
+  // sum tests
+  private def testWBTreeSetSumEmptySets(): Unit = {
+    val mySet1 = WBTreeSet[Int]()
+    val mySet2 = WBTreeSet[Int]()
+    assert(mySet1.sum(mySet2).getAllElements == List())
+  }
+
+  private def testWBTreeSetSumOneEmptySet(): Unit = {
+    val mySet1 = WBTreeSet[Int]()
+    val mySet2 = WBTreeSet[Int]().add(1).add(2).add(3)
+    assert(mySet1.sum(mySet2).getAllElements.toSet == List(1, 2, 3).toSet)
+  }
+
+  private def testWBTreeSetSumNotEmptySets(): Unit = {
+    val mySet1 = WBTreeSet[Int]().add(1).add(2)
+    val mySet2 = WBTreeSet[Int]().add(3)
+    assert(mySet1.sum(mySet2).getAllElements.toSet == List(1, 2, 3).toSet)
+  }
+  // sum tests
+
+  // intersection tests
+  private def testWBTreeSetIntersectionEmptySets(): Unit = {
+    val mySet1 = WBTreeSet[Int]()
+    val mySet2 = WBTreeSet[Int]()
+    assert(mySet1.intersection(mySet2).getAllElements == List())
+  }
+
+  private def testWBTreeSetIntersectionOneEmptySet(): Unit = {
+    val mySet1 = WBTreeSet[Int]()
+    val mySet2 = WBTreeSet[Int]().add(1).add(2)
+    assert(mySet1.intersection(mySet2).getAllElements == List())
+  }
+
+  private def testWBTreeSetIntersectionNotEmptySetsNotEmptyIntersection(): Unit = {
+    val mySet1 = WBTreeSet[Int]().add(1).add(2).add(3)
+    val mySet2 = WBTreeSet[Int]().add(1).add(7).add(3)
+    assert(mySet1.intersection(mySet2).getAllElements.toSet == List(1, 3).toSet)
+  }
+
+  private def testWBTreeSetIntersectionNotEmptySetsEmptyIntersection(): Unit = {
+    val mySet1 = WBTreeSet[Int]().add(1).add(2).add(3)
+    val mySet2 = WBTreeSet[Int]().add(4).add(5).add(6)
+    assert(mySet1.intersection(mySet2).getAllElements == List())
+  }
+  // intersection tests
+
 }
